@@ -19,6 +19,7 @@
 			let camera, scene, renderer;
 			let controller1, controller2;
 			let controllerGrip1, controllerGrip2;
+			let textMesh
 
 			let raycaster;
 
@@ -79,7 +80,7 @@
 					new THREE.TorusGeometry( 0.2, 0.04, 64, 32 )
 				];
 
-				for ( let i = 0; i < 50; i ++ ) {
+				for ( let i = 0; i < 5; i ++ ) {
 
 					const geometry = geometries[ Math.floor( Math.random() * geometries.length ) ];
 					const material = new THREE.MeshStandardMaterial( {
@@ -106,6 +107,9 @@
 					group.add( object );
 
 				}
+				textMesh = addText("cube", 0xf3020)
+				scene.add(textMesh)
+				textMesh.position.y = .3
 
 				//
 
@@ -269,9 +273,45 @@
 
 				intersectObjects( controller1 );
 				intersectObjects( controller2 );
+				textMesh.rotation.y += 0.05;
 
 				renderer.render( scene, camera );
 
+
+			}
+			function addText(text,color = 0xf3000) {
+
+				const geometry = new THREE.BufferGeometry();
+				geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( [], 3 ) );
+
+				const meshMaterial = new THREE.MeshPhongMaterial( { color: color, emissive: 0x072534, side: THREE.DoubleSide, flatShading: true } );
+
+				const textMesh = new THREE.Mesh( geometry, meshMaterial )
+				textMesh.position.z = -2
+				textMesh.position.x = -.5
+				textMesh.position.y = .2
+				scene.add(textMesh)
+
+				const fontLoader = new THREE.FontLoader();
+				fontLoader.load('/fonts/droid_serif_bold.typeface.json', function (font) {
+
+					const textGeometry = new THREE.TextGeometry(text, {
+						font: font,
+						size: .5,
+						height: .2,
+						curveSegments: 12,
+						bevelEnabled: false,
+						bevelThickness: 1,
+						bevelSize: .5,
+						bevelOffset: 0,
+						bevelSegments: 3
+					});
+					textGeometry.center();
+					textMesh.geometry.dispose()
+					textMesh.geometry = textGeometry
+				})
+
+				return textMesh
 			}
 
 		</script>
